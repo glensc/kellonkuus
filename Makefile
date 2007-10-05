@@ -1,6 +1,6 @@
-#CC := /usr/ppc/arm-wince-mingw32ce/bin/gcc
-CC := i386-mingw32-gcc
-LIBS := -lwinmm
+CC := /usr/ppc/arm-wince-mingw32ce/bin/gcc
+#CC := i386-mingw32-gcc
+#LIBS := -lwinmm
 CFLAGS := -Wall
 EXE := .exe
 
