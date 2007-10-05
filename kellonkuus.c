@@ -13,6 +13,9 @@
 #endif
 
 #define	WAVE T("\\Storage Card\\My Documents\\critical.wav")
+/*
+ * http://www.rainer-keuchel.de/wince/wince-api-diffs.txt
+ */
 
 int main() {
 //	time_t t = time(NULL);
@@ -32,25 +35,42 @@ int main() {
 //	}
 //
 
-	SYSTEMTIME st;
-	GetLocalTime(&st);
-	printf("kell on %d %d\n", st.wHour, st.wMinute);
-
+	// need current directory prepended to filenames we pass to PlaySound()
 	TCHAR cwd[MAX_PATH];
 	DWORD res = GetCurrentDirectory(sizeof(cwd), cwd);
 	if (res == 0) {
 		printf("GetCurrentDirectory failed (%lu)\n", GetLastError());
 		return 1;
 	}
-	if (res > MAX_PATH) {
+	if (res > sizeof(cwd)) {
 		printf("GetCurrentDirectory failed (buffer too small; need %lu chars)\n", res);
 		return 1;
 	}
-	cwd[res] = '\0';
-	printf("cwd: %s\n", cwd);
+	printf(T("cwd: %s\n"), cwd);
+
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	printf(T("kell on %d %d\n"), st.wHour, st.wMinute);
+
+	TCHAR buf[MAX_PATH * 2];
+
+	sprintf(buf, L"%s\\default.wav", cwd);
+	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
+
+	sprintf(buf, L"%s\\%d.wav", cwd, st.wHour / 10);
+	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
+
+	sprintf(buf, L"%s\\%d.wav", cwd, st.wHour % 10);
+	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
+
+	sprintf(buf, L"%s\\%d.wav", cwd, st.wMinute / 10);
+	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
+
+	sprintf(buf, L"%s\\%d.wav", cwd, st.wMinute % 10);
+	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
 //	BOOL res;
-//	res = PlaySound(WAVE, NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+//	res = PlaySound(WAVE, NULL, SND_FILENAME | SND_NODEFAULT);
 //	char buf[128];
 //   	sprintf(buf, L"retval: %s", res);
 
