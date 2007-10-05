@@ -6,8 +6,8 @@ EXE := .exe
 
 all: kellonkuus$(EXE)
 
-kellonkuus$(EXE): tellclock.o
+kellonkuus$(EXE): kellonkuus.o
 	$(CC) $(LIBS) $(LDFLAGS) $< -o $@
 
 clean:
-	rm -f kellonkuus$(EXE) tellclock.o
+	rm -f kellonkuus$(EXE) kellonkuus.o
