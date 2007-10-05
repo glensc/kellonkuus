@@ -8,14 +8,21 @@
 
 #if defined(UNICODE)
 #define T(a) L ## a
+#define _s "%ls"
 #else
 #define T(a) a
+#define _s "%s"
 #endif
 
-#define	WAVE T("\\Storage Card\\My Documents\\critical.wav")
+#define	BASEPATH T("\\Storage Card\\My Documents")
 /*
  * http://www.rainer-keuchel.de/wince/wince-api-diffs.txt
  */
+
+#ifndef _WIN32_WCE
+#undef PlaySound
+#define PlaySound(pszSound, hmod, fdwSound) printf("Play "_s"\n", pszSound);
+#endif
 
 int main() {
 //	time_t t = time(NULL);
@@ -35,9 +42,14 @@ int main() {
 //	}
 //
 
-	// need current directory prepended to filenames we pass to PlaySound()
+	DWORD res;
+
+	// need full path to files under WinCE
+#ifdef _WIN32_WCE
+	TCHAR *cwd = BASEPATH;
+#else
 	TCHAR cwd[MAX_PATH];
-	DWORD res = GetCurrentDirectory(sizeof(cwd), cwd);
+	res = GetCurrentDirectory(sizeof(cwd), cwd);
 	if (res == 0) {
 		printf("GetCurrentDirectory failed (%lu)\n", GetLastError());
 		return 1;
@@ -46,27 +58,30 @@ int main() {
 		printf("GetCurrentDirectory failed (buffer too small; need %lu chars)\n", res);
 		return 1;
 	}
-	printf(T("cwd: %s\n"), cwd);
+#endif
+	printf("cwd: "_s"\n", cwd);
 
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	printf(T("kell on %d %d\n"), st.wHour, st.wMinute);
+	printf("kell on %d %d\n", st.wHour, st.wMinute);
 
 	TCHAR buf[MAX_PATH * 2];
+	strncpy(buf, cwd, res);
+	TCHAR *p = buf + res;
 
-	sprintf(buf, L"%s\\default.wav", cwd);
+	strcpy(p, "\\default.wav");
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
-	sprintf(buf, L"%s\\%d.wav", cwd, st.wHour / 10);
+	sprintf(p, "\\%d.wav", st.wHour / 10);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
-	sprintf(buf, L"%s\\%d.wav", cwd, st.wHour % 10);
+	sprintf(p, "\\%d.wav", st.wHour % 10);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
-	sprintf(buf, L"%s\\%d.wav", cwd, st.wMinute / 10);
+	sprintf(p, "\\%d.wav", st.wMinute / 10);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
-	sprintf(buf, L"%s\\%d.wav", cwd, st.wMinute % 10);
+	sprintf(p, "\\%d.wav", st.wMinute % 10);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
 //	BOOL res;
