@@ -61,7 +61,7 @@ int main() {
 	_stprintf(p, TEXT("\\%d.wav"), st.wHour);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
-	_stprintf(p, TEXT("\\%d.wav"), st.wMinute);
+	_stprintf(p, TEXT("\\%02d.wav"), st.wMinute);
 	res = PlaySound(buf, NULL, SND_FILENAME | SND_NODEFAULT);
 
 	return 0;
