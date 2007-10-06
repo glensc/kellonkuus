@@ -3,11 +3,21 @@ CC := /usr/ppc/arm-wince-mingw32ce/bin/gcc
 #LIBS := -lwinmm
 CFLAGS := -Wall
 EXE := .exe
+PACKAGE := kellonkuus
+VERSION := 0.1
 
-all: kellonkuus$(EXE)
+all: $(PACKAGE)$(EXE)
 
-kellonkuus$(EXE): kellonkuus.o
+$(PACKAGE)$(EXE): $(PACKAGE).o
 	$(CC) $(LIBS) $(LDFLAGS) $< -o $@
 
 clean:
-	rm -f kellonkuus$(EXE) kellonkuus.o
+	rm -f $(PACKAGE)$(EXE) $(PACKAGE).o
+
+
+dist:
+	rm -rf $(PACKAGE)-$(VERSION)
+	mkdir $(PACKAGE)-$(VERSION)
+	cp -a Makefile $(PACKAGE).c $(PACKAGE)-$(VERSION)
+	tar cjf $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION)
+	rm -rf $(PACKAGE)-$(VERSION)
