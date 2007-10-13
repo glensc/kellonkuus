@@ -32,7 +32,7 @@
 #define _s "%s"
 #endif
 
-#define	BASEPATH TEXT("\\Storage Card\\My Documents")
+#define	BASEPATH TEXT("\\Storage Card\\kellonkuus")
 
 #ifndef _WIN32_WCE
 #undef PlaySound

@@ -4,7 +4,7 @@ CC := /usr/ppc/arm-wince-mingw32ce/bin/gcc
 CFLAGS := -Wall
 EXE := .exe
 PACKAGE := kellonkuus
-VERSION := 0.1
+VERSION := 0.2
 
 all: $(PACKAGE)$(EXE)
 
